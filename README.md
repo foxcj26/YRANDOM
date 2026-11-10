@@ -69,6 +69,21 @@ scripts/                 打包脚本、版本发布站生成脚本
 
 完整开发历程（15 轮对话、6 幕、算法示意图）见在线全记录页：<https://ade236ccde4e195c4.app.workbuddy.host/story/?sharecode=UV5IFW4S3E>
 
+## 上传到 GitHub
+
+本仓库已完成初始化与首次提交（分支 `main`）。推送前需准备：
+
+1. 在 CodeBuddy 设置页的「连接器」处授权 **GitHub**（或自行配置本机 git 凭据）；
+2. 创建远程仓库（网页新建，或 `gh repo create <owner>/<repo>`）；
+3. 关联并推送：
+
+```bash
+git remote add origin https://github.com/<owner>/<repo>.git
+git push -u origin main
+```
+
+`releases/` 下的 `.cipx` 已随仓库提交，也可另行作为 GitHub Releases 附件上传；打 `v2.0.0.15` 之类的 tag 可触发版本归档。CI 会自动构建并产出最新 `.cipx` 构建产物。
+
 ## 许可
 
 [MIT](LICENSE)
