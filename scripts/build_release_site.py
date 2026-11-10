@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# 生成 YRAND 版本发布站：汇总页 + 4 个版本子页（含 cipx/zip/说明下载）
+# 生成 YRAND 版本发布站：汇总页 + 7 个版本子页（含 cipx/zip/说明下载）
 import os, shutil, markdown
 
 WS = "/workspace"
@@ -138,11 +138,6 @@ ul.hl li{margin-bottom:4px}
 .btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
 .btn.primary:hover{filter:brightness(1.15)}
 .note{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:16px 20px;color:var(--mut);font-size:.88rem;margin-top:28px}
-.story{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,#2A2140,#1E1E26);border:1px solid var(--acc);border-radius:16px;padding:18px 22px;margin-bottom:26px;text-decoration:none;color:var(--fg)}
-.story:hover{filter:brightness(1.18)}
-.story b{display:block;font-size:1rem}
-.story span{display:block;color:var(--mut);font-size:.86rem;margin-top:4px}
-.story em{font-style:normal;color:var(--acc2);white-space:nowrap;font-size:.9rem}
 .preview{max-width:100%;border-radius:14px;border:1px solid var(--line);margin:12px 0 16px}
 .back{display:inline-block;color:var(--mut);text-decoration:none;font-size:.9rem;margin-bottom:22px}
 .back:hover{color:var(--acc)}
@@ -214,15 +209,6 @@ for v in VERSIONS:
 <a class="back" href="../" style="margin-top:26px">← 返回版本汇总</a>"""
     open(f"{d}/index.html", "w", encoding="utf-8").write(page(f"YRAND v{ver}", body))
 
-# ---------- 开发全记录子页（独立分享路径 /story/） ----------
-STORY_SRC = "/workspace/yrand-story"
-STORY_DST = f"{SITE}/story"
-os.makedirs(STORY_DST, exist_ok=True)
-for f in os.listdir(STORY_SRC):
-    src = os.path.join(STORY_SRC, f)
-    if os.path.isfile(src):
-        shutil.copy(src, STORY_DST)
-
 # ---------- 汇总页 ----------
 cards = []
 for i, v in enumerate(VERSIONS):
@@ -243,13 +229,8 @@ for i, v in enumerate(VERSIONS):
 body = f"""
 <header>
   <h1>YRAND <span class="accent">·</span> 版本发布台</h1>
-  <p class="sub">ClassIsland 课堂随机点名插件 · 2026-11-05 一次性迭代发布的 4 个版本（自线上 v2.0.0.8 起步）</p>
+  <p class="sub">ClassIsland 课堂随机点名插件 · 7 个迭代版本（自线上 v2.0.0.8 起步）</p>
 </header>
-<a class="story" href="story/">
-  <div><b>📖 开发全记录 · 一次对话驱动的插件进化</b>
-  <span>12 轮对话 · 6 幕 · 完整需求与实现脉络，附 3 张新点名算法示意图（主流程 / 公平内核 / 麦克风曲线）</span></div>
-  <em>查看 →</em>
-</a>
 <div class="timeline">{''.join(cards)}</div>
 <div class="note">
   <b>安装方式</b>：ClassIsland → 插件管理 → 本地安装，选择 .cipx 包（覆盖安装前建议先卸载旧版）。<br>
