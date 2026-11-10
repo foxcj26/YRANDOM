@@ -20,7 +20,7 @@ ClassIsland 课堂随机点名插件。一个圆形悬浮小钮，点一下开�
 
 ## 安装
 
-ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 下最新的 `.cipx`（覆盖安装前建议先卸载旧版）。
+ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 下最新的 `.cipx`（覆盖安装前建议先卸载旧版）。历史版本也可到 [Releases 页面](https://github.com/Ycj1026/YRAND/releases) 下载对应附件。
 
 各版本完整修改说明见 [`docs/changelog/`](docs/changelog/)，在线版本发布台：<https://ade236ccde4e195c4.app.workbuddy.host/?sharecode=UV5IFW4S3E>
 
@@ -57,32 +57,35 @@ scripts/                 打包脚本、版本发布站生成脚本
 
 ## 版本历史
 
+每个版本都有**独立 Release**，内含该版本 `.cipx` 附件与本版完整修改说明：<https://github.com/Ycj1026/YRAND/releases>。点击下表中的版本号即可跳转。
+
 | 版本 | 主题 |
 |---|---|
-| v2.0.0.9 | 通知时机重写（IL 补丁） |
-| v2.0.0.10 | 公平算法 v2 + 麦克风声浪加成（重建源码工程） |
-| v2.0.0.11 | Fluent 抽签图标标识 |
-| v2.0.0.12 | 麦克风加成入设置页 |
-| v2.0.0.13 | 滚动效果回归 · 两段式修复 · 结果通知去指纹 |
-| v2.0.0.14 | 过程状态统一「抽取中」 |
-| **v2.0.0.15** | **修复快速滚动重复弹窗（过程通知只注册一次）** |
+| [v2.0.0.9](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.9) | 通知时机重写（IL 补丁） |
+| [v2.0.0.10](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.10) | 公平算法 v2 + 麦克风声浪加成（重建源码工程） |
+| [v2.0.0.11](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.11) | Fluent 抽签图标标识 |
+| [v2.0.0.12](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.12) | 麦克风加成入设置页 |
+| [v2.0.0.13](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.13) | 滚动效果回归 · 两段式修复 · 结果通知去指纹 |
+| [v2.0.0.14](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.14) | 过程状态统一「抽取中」 |
+| **[v2.0.0.15](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.15)** | **修复快速滚动重复弹窗（过程通知只注册一次）** · latest |
 
 完整开发历程（15 轮对话、6 幕、算法示意图）见在线全记录页：<https://ade236ccde4e195c4.app.workbuddy.host/story/?sharecode=UV5IFW4S3E>
 
-## 上传到 GitHub
+## GitHub 仓库与版本发布
 
-本仓库已完成初始化与首次提交（分支 `main`）。推送前需准备：
+本仓库已推送至 <https://github.com/Ycj1026/YRAND>（公开仓库，默认分支 `main`）。源码、插件元数据、7 个历史 `.cipx` 发布包、逐版本修改说明、算法示意图与打包/建站脚本均已随仓库提交。
 
-1. 在 CodeBuddy 设置页的「连接器」处授权 **GitHub**（或自行配置本机 git 凭据）；
-2. 创建远程仓库（网页新建，或 `gh repo create <owner>/<repo>`）；
-3. 关联并推送：
+版本发布采用 **GitHub Releases**：`v2.0.0.9` ~ `v2.0.0.15` 各有一个独立 Release，分别附带该版本 `.cipx` 附件、本版速览与完整修改说明；`v2.0.0.15` 标记为 latest。仓库 `src/` 为最终 v2.0.0.15 的可编译源码快照，各历史 tag 均指向当前 `main`，历史构建产物以对应 Release 附件为准。
+
+发布新版本：
 
 ```bash
-git remote add origin https://github.com/<owner>/<repo>.git
-git push -u origin main
+python3 scripts/pack.py                 # 产出 dist/YRAND-<version>.cipx
+git tag v2.0.0.16 && git push origin v2.0.0.16
+# 再到 Releases 页面新建 Release，上传 dist/ 下的 .cipx 并填写修改说明
 ```
 
-`releases/` 下的 `.cipx` 已随仓库提交，也可另行作为 GitHub Releases 附件上传；打 `v2.0.0.15` 之类的 tag 可触发版本归档。CI 会自动构建并产出最新 `.cipx` 构建产物。
+GitHub Actions 会在 push / PR / 手动触发时自动执行 `restore → build → pack`，并上传最新 `.cipx` 构建产物（见 [`.github/workflows/build.yml`](.github/workflows/build.yml)）。
 
 ## 许可
 
