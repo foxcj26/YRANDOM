@@ -1,0 +1,26 @@
+# 构建产物
+bin/
+obj/
+dist/
+*.user
+*.suo
+*.userosscache
+
+# IDE / 编辑器
+.vs/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# 本地工具 / 临时文件
+*.log
+*.tmp
+__pycache__/
+*.pyc
+
+# 站点生成产物（源文件在 scripts/）
+_site/
+site-dist/
+
+# 注意：releases/*.cipx 是正式发布包，需要提交到仓库，请勿忽略

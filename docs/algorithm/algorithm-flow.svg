@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="#8B76D6"/>
+  </marker>
+</defs>
+<rect width="1000" height="340" rx="16" fill="#141418"/>
+<text x="30" y="36" fill="#EDEDF5" font-size="19" font-weight="700">新点名算法 · 一次性抽取主流程</text>
+<text x="30" y="58" fill="#9A9AAE" font-size="12.5">Verifiable Layered Draw v2 · 债务校正 + 冷落兜底 + 种子可复算 · YRAND v2.0.0.10 起</text>
+
+<!-- 阶段节点 -->
+<g>
+  <!-- 1 -->
+  <rect x="30" y="78" width="140" height="150" rx="14" fill="#20202B" stroke="#7C4DFF" stroke-width="1.5"/>
+  <circle cx="52" cy="100" r="12" fill="#7C4DFF"/><text x="52" y="105" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">1</text>
+  <text x="45" y="132" fill="#EDEDF5" font-size="14" font-weight="700">点击圆钮</text>
+  <text x="45" y="156" fill="#B9A8FF" font-size="11">L0 · 熵</text>
+  <text x="45" y="179" fill="#C9C9D6" font-size="11">生成 256-bit 种子 S</text>
+  <text x="45" y="197" fill="#C9C9D6" font-size="11">先公示指纹 H[0..8]</text>
+  <!-- 2 -->
+  <rect x="196" y="78" width="140" height="150" rx="14" fill="#20202B" stroke="#4FC3F7" stroke-width="1.5"/>
+  <circle cx="218" cy="100" r="12" fill="#4FC3F7"/><text x="218" y="105" fill="#14202A" font-size="13" font-weight="700" text-anchor="middle">2</text>
+  <text x="211" y="132" fill="#EDEDF5" font-size="14" font-weight="700">名册归一</text>
+  <text x="211" y="156" fill="#8FD6F5" font-size="11">L1 · 反作弊</text>
+  <text x="211" y="179" fill="#C9C9D6" font-size="11">NFKC · 去空白</text>
+  <text x="211" y="197" fill="#C9C9D6" font-size="11">同名合并防刷权重</text>
+  <!-- 3 -->
+  <rect x="362" y="78" width="140" height="150" rx="14" fill="#2A2140" stroke="#B9A8FF" stroke-width="2"/>
+  <circle cx="384" cy="100" r="12" fill="#B9A8FF"/><text x="384" y="105" fill="#211738" font-size="13" font-weight="700" text-anchor="middle">3</text>
+  <text x="377" y="132" fill="#EDEDF5" font-size="14" font-weight="700">公平抽样</text>
+  <text x="377" y="156" fill="#CBB8FF" font-size="11">L2 · 债务 + Gumbel</text>
+  <text x="377" y="179" fill="#C9C9D6" font-size="11">冷落滑窗必抽池</text>
+  <text x="377" y="200" fill="#FFD54F" font-size="11.5" font-weight="700">★ 锁定唯一结果</text>
+  <!-- 4 -->
+  <rect x="528" y="78" width="140" height="150" rx="14" fill="#20202B" stroke="#FFB74D" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <circle cx="550" cy="100" r="12" fill="#FFB74D"/><text x="550" y="105" fill="#2A1B08" font-size="13" font-weight="700" text-anchor="middle">4</text>
+  <text x="543" y="132" fill="#EDEDF5" font-size="14" font-weight="700">零消耗表演</text>
+  <text x="543" y="156" fill="#FFD08A" font-size="11">L3/L4 · 展示层</text>
+  <text x="543" y="179" fill="#C9C9D6" font-size="11">滚动 · 定格 · 连滑 K</text>
+  <text x="543" y="197" fill="#C9C9D6" font-size="11">麦克风仅在此生效</text>
+  <!-- 5 -->
+  <rect x="694" y="78" width="140" height="150" rx="14" fill="#20202B" stroke="#81C784" stroke-width="1.5"/>
+  <circle cx="716" cy="100" r="12" fill="#81C784"/><text x="716" y="105" fill="#0F2413" font-size="13" font-weight="700" text-anchor="middle">5</text>
+  <text x="709" y="132" fill="#EDEDF5" font-size="14" font-weight="700">过程结束</text>
+  <text x="709" y="156" fill="#A9DBAF" font-size="11">L5 · 通知对齐</text>
+  <text x="709" y="179" fill="#C9C9D6" font-size="11">只推送 1 次</text>
+  <text x="709" y="197" fill="#C9C9D6" font-size="11">「抽选结果」+ 播报</text>
+  <!-- 6 -->
+  <rect x="860" y="78" width="140" height="150" rx="14" fill="#20202B" stroke="#EF9A9A" stroke-width="1.5"/>
+  <circle cx="882" cy="100" r="12" fill="#EF9A9A"/><text x="882" y="105" fill="#2A1010" font-size="13" font-weight="700" text-anchor="middle">6</text>
+  <text x="875" y="132" fill="#EDEDF5" font-size="14" font-weight="700">提交公示</text>
+  <text x="875" y="156" fill="#F3BDBD" font-size="11">L5 · 账本</text>
+  <text x="875" y="179" fill="#C9C9D6" font-size="11">账本 / 次数持久化</text>
+  <text x="875" y="197" fill="#C9C9D6" font-size="11">公布 S 供复算</text>
+</g>
+
+<!-- 箭头 -->
+<g stroke="#8B76D6" stroke-width="2" marker-end="url(#ar)">
+  <line x1="172" y1="153" x2="192" y2="153"/>
+  <line x1="338" y1="153" x2="358" y2="153"/>
+  <line x1="504" y1="153" x2="524" y2="153"/>
+  <line x1="670" y1="153" x2="690" y2="153"/>
+  <line x1="836" y1="153" x2="856" y2="153"/>
+</g>
+
+<!-- 隔离条 -->
+<rect x="30" y="250" width="940" height="62" rx="12" fill="#2A2140" stroke="#7C4DFF" stroke-width="1.5"/>
+<text x="50" y="276" fill="#FFD54F" font-size="13.5" font-weight="700">★ 唯一名额在第 ① 步瞬间锁定，第 ③ 步完成抽取</text>
+<text x="50" y="298" fill="#D8CFF5" font-size="12">第 ④ 步的麦克风音量、连滑概率、连滑次数、手动点击时机都只改变「表演时长」，无法改变最终中签者；过程未结束不发任何通知。</text>
+</svg>
