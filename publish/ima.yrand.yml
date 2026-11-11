@@ -1,0 +1,28 @@
+# ClassIsland 2.x 插件市场上架清单（本文件不打包进 .cipx）
+# 提交目标：https://github.com/ClassIsland/PluginIndex  →  index/plugins-v2/ima.yrand.yml
+# 规范依据：https://docs.classisland.tech/dev/plugins/publishing.html
+# 索引生成器会：按 repoOwner/repoName 找最新合法 Release（tag 必须为 a.b.c.d），
+#              用 assetsRoot 拼接 README / 图标的 raw 地址，并从发行日志提取 MD5。
+
+id: ima.yrand
+name: YRAND
+description: >-
+  ClassIsland 课堂随机点名插件。名字在同一条提醒上原地滚动换名、两段式定格连滑；
+  债务校正 + Gumbel 加权 + 冷落滑窗的公平算法，麦克风声浪加成，结果可复算自证。
+entranceAssembly: "ClassIsland.YRAND.dll"
+url: https://github.com/Ycj1026/YRAND
+repoOwner: Ycj1026
+repoName: YRAND
+assetsRoot: main/plugin
+version: 2.0.0.15
+apiVersion: 2.0.0.0
+author: Ycj1026 与 workbuddy
+icon: icon.png
+readme: README.md
+supportedOSPlatforms:
+  - Windows
+  - Linux
+  - OSX
+
+# 未设置 artifactName：生成器自动匹配该 Release 中第一个 .cipx 附件，后续发版无需改本文件。
+# 未设置 tagPattern：生成器自动取「版本号可解析」的最新 Release；带 v 前缀的旧 tag 会被忽略。
