@@ -2,7 +2,7 @@
 
 ClassIsland 课堂随机点名插件。点一下圆钮：名字在**同一条提醒上原地滚动换名**，时间到定下一位，按「滑动概率」决定是否连滑，整套过程结束后才推送一次「抽选结果」并语音播报。
 
-> 当前版本 **v2.0.0.15** · net8.0 / PluginSdk 2.0.0.2 · [全部 Release](https://github.com/Ycj1026/YRAND/releases)
+> 当前版本 **v2.0.0.15** · 作者 **Ycj1026 与 workbuddy** · [作者与协作者](CONTRIBUTORS.md) · [全部 Release](https://github.com/Ycj1026/YRAND/releases)
 
 ## 功能
 
