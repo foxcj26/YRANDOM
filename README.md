@@ -58,13 +58,13 @@ ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 
 
 | 版本 | 主题 |
 |---|---|
-| [v2.0.0.9](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.9) | 通知时机重写（IL 补丁） |
-| [v2.0.0.10](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.10) | 公平算法 v2 + 麦克风声浪加成 |
-| [v2.0.0.11](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.11) | Fluent 抽签图标标识 |
-| [v2.0.0.12](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.12) | 麦克风加成入设置页 |
-| [v2.0.0.13](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.13) | 滚动效果回归 · 两段式可见 · 去指纹 |
-| [v2.0.0.14](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.14) | 过程状态统一「抽取中」 |
-| **[v2.0.0.15](https://github.com/Ycj1026/YRAND/releases/tag/v2.0.0.15)** | **修复快速滚动重复弹窗** · latest |
+| [2.0.0.9](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.9) | 通知时机重写（IL 补丁） |
+| [2.0.0.10](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.10) | 公平算法 v2 + 麦克风声浪加成 |
+| [2.0.0.11](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.11) | Fluent 抽签图标标识 |
+| [2.0.0.12](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.12) | 麦克风加成入设置页 |
+| [2.0.0.13](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.13) | 滚动效果回归 · 两段式可见 · 去指纹 |
+| [2.0.0.14](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.14) | 过程状态统一「抽取中」 |
+| **[2.0.0.15](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.15)** | **修复快速滚动重复弹窗** · latest |
 
 逐版本说明见 [`docs/changelog/`](docs/changelog/)；在线版本发布台：<https://ade236ccde4e195c4.app.workbuddy.host/?sharecode=UV5IFW4S3E>
 
