@@ -103,6 +103,29 @@ public class YrandSettings
 	/// <summary>最近一次抽选公布的种子（SHA256 全量 hex，可复算）。</summary>
 	public string LastSeedHex { get; set; } = "";
 
+	// ---- v2.0.0.16 更新检查与匿名统计 ----
+
+	/// <summary>启动后是否自动检查更新（拉取发布台 latest.json，静默、无须翻墙）。</summary>
+	public bool UpdateCheckEnabled { get; set; } = true;
+
+	/// <summary>发现新版本时是否弹一条提醒（同一版本只提醒一次；抽选进行中绝不打扰）。</summary>
+	public bool UpdateNotifyEnabled { get; set; } = true;
+
+	/// <summary>匿名使用统计：每天首次启动上报一次，不含名单/机器名等任何个人信息。</summary>
+	public bool StatsEnabled { get; set; } = true;
+
+	/// <summary>更新清单地址（latest.json）。默认国内发布台，可自行更换。</summary>
+	public string UpdateChannelUrl { get; set; } = "https://ade236ccde4e195c4.app.workbuddy.host/latest.json?sharecode=UV5IFW4S3E";
+
+	/// <summary>匿名统计计数服务地址。默认 Abacus，可自建替换。</summary>
+	public string StatsEndpointUrl { get; set; } = "https://abacus.jasoncameron.dev";
+
+	/// <summary>最近一次提醒过的新版本号（同一版本不重复提醒）。</summary>
+	public string LastNotifiedVersion { get; set; } = "";
+
+	/// <summary>最近一次匿名上报日期（yyyy-MM-dd，每天最多一次）。</summary>
+	public string LastStatsReportDate { get; set; } = "";
+
 	public static YrandSettings Load(string path)
 	{
 		try

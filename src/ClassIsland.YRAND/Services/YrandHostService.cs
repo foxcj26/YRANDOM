@@ -43,11 +43,21 @@ public class YrandHostService : IHostedService
 
 	private MicLevelService _mic = new MicLevelService();
 
+	private UpdateCheckService? _update;
+
+	private UsageStatsService? _stats;
+
 	/// <summary>公平抽取核心（债务校正 + 冷落兜底 + 可验证种子）。</summary>
 	public FairDrawService Fair => _fair;
 
 	/// <summary>麦克风实时响度服务。</summary>
 	public MicLevelService Mic => _mic;
+
+	/// <summary>更新检查服务（v2.0.0.16）。</summary>
+	public UpdateCheckService Update => _update ??= new UpdateCheckService(this);
+
+	/// <summary>匿名使用统计服务（v2.0.0.16）。</summary>
+	public UsageStatsService Stats => _stats ??= new UsageStatsService(this);
 
 	public YrandSettings Settings => _settings;
 
@@ -67,6 +77,8 @@ public class YrandHostService : IHostedService
 		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
 		_settings = YrandSettings.Load(_settingsPath);
 		_fair = new FairDrawService(_settings);
+		Update.Start();
+		Stats.Start();
 		if (_settings.ShowWindowOnStartup)
 		{
 			Dispatcher.UIThread.Post((Action)ShowWindow, DispatcherPriority.Background);
@@ -200,6 +212,27 @@ public class YrandHostService : IHostedService
 	{
 		EndEpisodeNotification();
 		ShowYrand("YRAND", text, forceNew: true, speech: false, displaySeconds, null);
+	}
+
+	/// <summary>
+	/// 后台提示（v2.0.0.16：更新提醒等）。调度到 UI 线程后，
+	/// 仅在「无抽选过程通知且无占线通知」的完全空闲状态下才发出——
+	/// 抽选进行中或结果通知还挂着时直接放弃本次提示，绝不打扰点名。
+	/// </summary>
+	public void AnnounceBackground(string text, double displaySeconds = 7.0)
+	{
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			return;
+		}
+		Dispatcher.UIThread.Post(delegate
+		{
+			if (_episodeRequest != null || _lastRequest != null)
+			{
+				return;
+			}
+			ShowYrand("YRAND", text, forceNew: true, speech: false, displaySeconds, null);
+		}, DispatcherPriority.Background);
 	}
 
 	private DateTime SessionDeadline()

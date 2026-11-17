@@ -108,6 +108,20 @@ VERSIONS = [
         ],
         "color": "#AED581",
     },
+    {
+        "ver": "2.0.0.16",
+        "title": "用户数量统计 + 更新提示",
+        "tagline": "匿名统计有多少课堂在用，新版本空闲时才提醒",
+        "date": "2026-11-17",
+        "size": "261 KB",
+        "way": "新增 UpdateCheckService / UsageStatsService 两个服务，真实编译 0 错误",
+        "highlights": [
+            "插件更新提示：启动 20 秒后静默拉取发布台 latest.json（国内直连，无须翻墙），版本比对后仅在完全空闲时提醒一次，抽选进行中绝不打扰",
+            "用户数量统计：每天首次启动发一次匿名计数（无名单、无机器名、无设备号），统计端只是一个数字；设置页可查全球累计活跃次数",
+            "两项均默认开启、均可一键关闭；更新提醒同一版本只弹一次，统计失败/断网完全静默，不影响点名任何功能",
+        ],
+        "color": "#FFB74D",
+    },
 ]
 
 CSS = """
@@ -239,6 +253,21 @@ body = f"""
 </div>
 <footer>YRAND · ima.yrand · ClassIsland.PluginSdk 2.0.0.2 / net8.0</footer>"""
 open(f"{SITE}/index.html", "w", encoding="utf-8").write(page("YRAND 版本发布台", body))
+
+# ---------- latest.json（v2.0.0.16 起插件「更新提示」的检查数据源） ----------
+BASE_URL = "https://ade236ccde4e195c4.app.workbuddy.host"
+SHARECODE = "UV5IFW4S3E"
+latest = VERSIONS[-1]
+latest_json = {
+    "name": "YRAND",
+    "version": latest["ver"],
+    "releasedAt": latest["date"],
+    "releaseNotes": latest["tagline"],
+    "downloadUrl": f"{BASE_URL}/v{latest['ver']}/YRAND-{latest['ver']}.cipx?sharecode={SHARECODE}",
+}
+import json as _json
+open(f"{SITE}/latest.json", "w", encoding="utf-8").write(
+    _json.dumps(latest_json, ensure_ascii=False, indent=2) + "\n")
 
 print("站点生成完成：")
 for root, _, files in os.walk(SITE):

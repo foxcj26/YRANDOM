@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -14,6 +15,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.XamlIl.Runtime;
 using Avalonia.Media;
+using Avalonia.Threading;
 using ClassIsland.Core.Abstractions.Controls;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Controls;
@@ -306,6 +308,88 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		}
 	}
 
+	// ---- v2.0.0.16 更新检查与匿名统计 ----
+
+	public bool UpdateCheckEnabled
+	{
+		get
+		{
+			return Settings.UpdateCheckEnabled;
+		}
+		set
+		{
+			Settings.UpdateCheckEnabled = value;
+			Save("UpdateCheckEnabled");
+		}
+	}
+
+	public bool UpdateNotifyEnabled
+	{
+		get
+		{
+			return Settings.UpdateNotifyEnabled;
+		}
+		set
+		{
+			Settings.UpdateNotifyEnabled = value;
+			Save("UpdateNotifyEnabled");
+		}
+	}
+
+	public bool StatsEnabled
+	{
+		get
+		{
+			return Settings.StatsEnabled;
+		}
+		set
+		{
+			Settings.StatsEnabled = value;
+			Save("StatsEnabled");
+		}
+	}
+
+	private bool _checkingUpdate;
+
+	public string UpdateStatusText
+	{
+		get
+		{
+			UpdateCheckService update = _service?.Update;
+			if (update == null)
+			{
+				return "当前版本未知。";
+			}
+			if (_checkingUpdate)
+			{
+				return "正在检查更新…";
+			}
+			string current = update.Current.ToString();
+			if (string.IsNullOrEmpty(update.LatestVersion))
+			{
+				return $"当前版本 v{current} · 尚未获取到最新版本信息（发布台暂不可达或未开启检查）。";
+			}
+			string state = (update.LatestVersion == current) ? "已是最新" : ((Version.TryParse(update.LatestVersion, out Version latest) && latest > update.Current) ? "有新版本可更新" : "发布台版本较旧");
+			string extra = ((update.LatestVersion != current && !string.IsNullOrWhiteSpace(update.LatestNotes))) ? $" · {update.LatestNotes}" : "";
+			return $"当前版本 v{current} · 最新版本 v{update.LatestVersion}（{state}）{extra}";
+		}
+	}
+
+	private string _statsText = "统计查询中…";
+
+	public string StatsText
+	{
+		get
+		{
+			return _statsText;
+		}
+		private set
+		{
+			_statsText = value;
+			Raise("StatsText");
+		}
+	}
+
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public YrandSettingsPage()
@@ -313,6 +397,40 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		_service = IAppHost.Host?.Services.GetServices<IHostedService>().OfType<YrandHostService>().FirstOrDefault();
 		((StyledElement)this).DataContext = this;
 		InitializeComponent();
+		RefreshStatsText();
+	}
+
+	private void RefreshStatsText()
+	{
+		UsageStatsService stats = _service?.Stats;
+		if (stats == null || !_service.Settings.StatsEnabled)
+		{
+			StatsText = "匿名统计已关闭，本机不再上报。";
+			return;
+		}
+		_ = Task.Run(async delegate
+		{
+			long? total = await stats.QueryTotalAsync().ConfigureAwait(false);
+			string text = total.HasValue ? $"全球累计活跃 {total} 次（每台设备每天最多计 1 次，无任何个人信息）" : "统计服务暂不可达（不影响插件任何功能）。";
+			Dispatcher.UIThread.Post(delegate
+			{
+				StatsText = text;
+			}, DispatcherPriority.Background);
+		});
+	}
+
+	private async void OnCheckUpdate(object? sender, RoutedEventArgs e)
+	{
+		UpdateCheckService update = _service?.Update;
+		if (update == null || _checkingUpdate)
+		{
+			return;
+		}
+		_checkingUpdate = true;
+		Raise("UpdateStatusText");
+		await update.CheckAsync(notify: false);
+		_checkingUpdate = false;
+		Raise("UpdateStatusText");
 	}
 
 	private void OnShowWindow(object? sender, RoutedEventArgs e)
@@ -1400,6 +1518,93 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		((ISupportInitialize)obj82).EndInit();
 		context.PopParent();
 		((ISupportInitialize)obj80).EndInit();
+		// —— 插件更新提示（v2.0.0.16） ——
+		Controls childrenUpd = ((Panel)obj3).Children;
+		SettingsExpander updExpander = new SettingsExpander();
+		((ISupportInitialize)updExpander).BeginInit();
+		((AvaloniaList<Control>)(object)childrenUpd).Add((Control)updExpander);
+		updExpander.IconSource = (IconSource)(object)new FluentIconSource("\ue895").ProvideValue();
+		((HeaderedItemsControl)updExpander).Header = "插件更新提示";
+		updExpander.Description = "启动约 20 秒后自动检查一次更新（走国内发布台，无须翻墙）。发现新版本时仅在完全空闲状态下提醒一次——抽选进行中绝不打扰。";
+		ToggleSwitch updToggle = new ToggleSwitch();
+		updExpander.Footer = (object)updToggle;
+		updToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("UpdateCheckEnabled", (BindingMode)2)
+		{
+			Source = context.RootObject
+		});
+		ItemCollection updItems = ((ItemsControl)updExpander).Items;
+		StackPanel updRow1 = new StackPanel();
+		updRow1.Spacing = 8.0;
+		updItems.Add((object)updRow1);
+		TextBlock updStatus = new TextBlock();
+		updStatus.TextWrapping = (TextWrapping)1;
+		updRow1.Children.Add((Control)updStatus);
+		updStatus.Bind(TextBlock.TextProperty, new Binding("UpdateStatusText")
+		{
+			Source = context.RootObject
+		});
+		StackPanel updRow2 = new StackPanel();
+		updRow2.Orientation = (Orientation)0;
+		updRow2.Spacing = 10.0;
+		updRow1.Children.Add((Control)updRow2);
+		Button checkBtn = new Button();
+		((Interactive)checkBtn).AddHandler((RoutedEvent)(object)Button.ClickEvent, (Delegate)new EventHandler<RoutedEventArgs>(context.RootObject.OnCheckUpdate), (RoutingStrategies)5, false);
+		((ContentControl)checkBtn).Content = "立即检查";
+		updRow2.Children.Add((Control)checkBtn);
+		TextBlock updHint = new TextBlock();
+		updHint.Text = "更新方法：到版本发布台下载最新版 .cipx，ClassIsland → 插件管理 → 本地安装（建议先卸载旧版）。";
+		updHint.TextWrapping = (TextWrapping)1;
+		((Visual)updHint).Opacity = 0.7;
+		((Layoutable)updHint).VerticalAlignment = (VerticalAlignment)2;
+		updRow2.Children.Add((Control)updHint);
+		StackPanel updRow3 = new StackPanel();
+		updRow3.Spacing = 6.0;
+		updItems.Add((object)updRow3);
+		ToggleSwitch updNotifyToggle = new ToggleSwitch();
+		updNotifyToggle.OnContent = (object)"发现新版时提醒我";
+		updNotifyToggle.OffContent = (object)"只在设置页显示";
+		updRow3.Children.Add((Control)updNotifyToggle);
+		updNotifyToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("UpdateNotifyEnabled", (BindingMode)2)
+		{
+			Source = context.RootObject
+		});
+		TextBlock updNotifyHint = new TextBlock();
+		updNotifyHint.Text = "提醒只在无抽选、无其他通知占线时弹出，同一版本只提醒一次。";
+		updNotifyHint.TextWrapping = (TextWrapping)1;
+		((Visual)updNotifyHint).Opacity = 0.7;
+		updRow3.Children.Add((Control)updNotifyHint);
+		((ISupportInitialize)updExpander).EndInit();
+		// —— 用户数量统计（v2.0.0.16） ——
+		Controls childrenStats = ((Panel)obj3).Children;
+		SettingsExpander statsExpander = new SettingsExpander();
+		((ISupportInitialize)statsExpander).BeginInit();
+		((AvaloniaList<Control>)(object)childrenStats).Add((Control)statsExpander);
+		statsExpander.IconSource = (IconSource)(object)new FluentIconSource("\ue9d9").ProvideValue();
+		((HeaderedItemsControl)statsExpander).Header = "用户数量统计（匿名）";
+		statsExpander.Description = "每天首次启动向计数服务发一次匿名请求，让作者知道有多少课堂在用 YRAND。不包含名单、机器名、设备号等任何个人信息，统计端只是一个数字。";
+		ToggleSwitch statsToggle = new ToggleSwitch();
+		statsExpander.Footer = (object)statsToggle;
+		statsToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("StatsEnabled", (BindingMode)2)
+		{
+			Source = context.RootObject
+		});
+		ItemCollection statsItems = ((ItemsControl)statsExpander).Items;
+		StackPanel statsRow = new StackPanel();
+		statsRow.Spacing = 6.0;
+		statsItems.Add((object)statsRow);
+		TextBlock statsCount = new TextBlock();
+		statsCount.TextWrapping = (TextWrapping)1;
+		statsRow.Children.Add((Control)statsCount);
+		statsCount.Bind(TextBlock.TextProperty, new Binding("StatsText")
+		{
+			Source = context.RootObject
+		});
+		TextBlock statsHint = new TextBlock();
+		statsHint.Text = "关闭后本机完全不再上报；统计服务地址可在 settings.json 的 StatsEndpointUrl 修改。";
+		statsHint.TextWrapping = (TextWrapping)1;
+		((Visual)statsHint).Opacity = 0.7;
+		statsRow.Children.Add((Control)statsHint);
+		((ISupportInitialize)statsExpander).EndInit();
 		context.PopParent();
 		((ISupportInitialize)obj2).EndInit();
 		context.PopParent();
