@@ -1645,7 +1645,7 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		((AvaloniaList<Control>)(object)childrenCrash).Add((Control)crashExpander);
 		crashExpander.IconSource = (IconSource)(object)new FluentIconSource("\ueb90").ProvideValue();
 		((HeaderedItemsControl)crashExpander).Header = "崩溃上报（Sentry）";
-		crashExpander.Description = "插件闪退时自动把异常堆栈上报到 Sentry，帮助定位崩溃原因。默认不上传任何名单与抽选记录，仅包含异常信息与插件版本。";
+		crashExpander.Description = "插件闪退时自动把异常堆栈上报到 Sentry，帮助定位崩溃原因。已内置作者项目 DSN、装上即上报；仅包含异常信息与插件版本，不含名单与抽选记录。";
 		ToggleSwitch crashToggle = new ToggleSwitch();
 		crashExpander.Footer = (object)crashToggle;
 		crashToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("CrashReportEnabled", (BindingMode)2)
@@ -1664,7 +1664,7 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 			Source = context.RootObject
 		});
 		TextBlock crashHint = new TextBlock();
-		crashHint.Text = "配置方法：在 sentry.io 免费创建项目得到 DSN，填入 settings.json 的 SentryDsn 字段（留空则完全不上报）；上报地址也可随时关闭。";
+		crashHint.Text = "DSN 已默认内置并启用；可在 settings.json 的 SentryDsn 替换为自己的 Sentry 项目（留空 = 完全不上报）。";
 		crashHint.TextWrapping = (TextWrapping)1;
 		((Visual)crashHint).Opacity = 0.7;
 		crashRow.Children.Add((Control)crashHint);

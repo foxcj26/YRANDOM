@@ -96,7 +96,7 @@ dotnet build -c Release
 | 发送 ClassIsland 提醒 | 抽中结果推送到主界面提醒条 |
 | 语音播报 | 抽中定格后按播报词模板念出结果，`{name}` 占位，滚动阶段不出声 |
 | 悬浮窗启动自动显示 | ClassIsland 启动后自动打开悬浮窗 |
-| 崩溃上报（Sentry） | 插件异常时上报堆栈到 Sentry；需在 settings.json 的 SentryDsn 填入项目 DSN（留空完全不上报），CrashReportEnabled 可整体关闭 |
+| 崩溃上报（Sentry） | 插件异常时上报堆栈到 Sentry；DSN 已默认内置并启用，可在 settings.json 的 SentryDsn 替换（留空完全不上报），CrashReportEnabled 可整体关闭 |
 | 插件更新提示 | 启动约 20 秒后静默检查更新（走国内发布台，无须翻墙）；发现新版仅空闲时提醒一次，抽选中绝不打扰；可整体关闭或改为仅设置页显示；「立即检查」按钮随时手动检查 |
 | 用户数量统计（匿名） | 每天首次启动向计数服务发一次匿名请求（无名单/机器名/设备号，只是一个数字）；设置页显示全球累计活跃次数；关闭后本机完全不再上报 |
 

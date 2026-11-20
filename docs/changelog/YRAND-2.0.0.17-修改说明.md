@@ -25,7 +25,7 @@
 ## 3. Sentry 崩溃上报
 
 - 新增 `CrashReportService`：捕获 AppDomain 未处理异常、未观察的任务异常、Avalonia UI 线程异常，经 Sentry SDK（7.0.1，单 DLL 随包）上报。
-- **默认不上报**：在 `settings.json` 填入 `SentryDsn`（sentry.io 免费创建项目获得）后生效；`CrashReportEnabled` 开关可整体关闭。
+- **开箱即用**：已内置作者 Sentry 项目 DSN，装上即上报；`CrashReportEnabled` 开关可整体关闭，`SentryDsn` 可替换为自己的项目（留空 = 不上报）。
 - 上报内容仅异常堆栈与插件版本，不含名单与抽选记录；DSN 非法或网络不可达时静默降级，绝不影响插件功能；崩溃前有 3 秒 flush 窗口。
 - 设置页新增「崩溃上报（Sentry）」卡片：开关 + 状态说明。
 
@@ -33,8 +33,8 @@
 
 | 字段 | 默认 | 说明 |
 |---|---|---|
-| `CrashReportEnabled` | `true` | 崩溃上报总开关（DSN 为空时即使开启也无任何网络行为） |
-| `SentryDsn` | `""` | Sentry 项目 DSN，留空 = 不上报 |
+| `CrashReportEnabled` | `true` | 崩溃上报总开关 |
+| `SentryDsn` | 内置作者项目 DSN | Sentry 项目 DSN，可替换或留空（留空 = 不上报） |
 
 ## 验证
 

@@ -128,11 +128,11 @@ public class YrandSettings
 
 	// ---- v2.0.0.17 崩溃上报（Sentry） ----
 
-	/// <summary>是否允许崩溃上报。DSN 为空时即使开启也不会有任何网络行为。</summary>
+	/// <summary>是否允许崩溃上报。默认开启（DSN 已内置）；置 false 可完全关闭。</summary>
 	public bool CrashReportEnabled { get; set; } = true;
 
-	/// <summary>Sentry 项目 DSN（在 sentry.io 创建项目后获得）。留空 = 不上报。</summary>
-	public string SentryDsn { get; set; } = "";
+	/// <summary>Sentry 项目 DSN。v2.0.0.17 起默认内置作者项目 DSN，可替换为自己的项目。</summary>
+	public string SentryDsn { get; set; } = "https://d06f5228e8b28051e699606ee818d876@o4512465066917888.ingest.us.sentry.io/4512465078779904";
 
 	public static YrandSettings Load(string path)
 	{
