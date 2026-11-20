@@ -92,7 +92,7 @@ def main() -> None:
 
     trim_deps(stage / "ClassIsland.YRAND.deps.json", stage / "ClassIsland.YRAND.deps.json")
 
-    pkg = outdir / f"YRAND-{version}.cipx"
+    pkg = outdir / f"YRANDOM-{version}.cipx"
     if pkg.exists():
         pkg.unlink()
     with zipfile.ZipFile(pkg, "w", zipfile.ZIP_DEFLATED) as z:

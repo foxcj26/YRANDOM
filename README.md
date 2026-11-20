@@ -1,8 +1,11 @@
-# YRAND
+# YRANDOM
 
 ClassIsland 课堂随机点名插件。点一下圆钮：名字在**同一条提醒上原地滚动换名**，时间到定下一位，按「滑动概率」决定是否连滑，整套过程结束后才推送一次「抽选结果」并语音播报。
 
-> 当前版本 **v2.0.0.17** · 作者 **Ycj1026 与 workbuddy** · [作者与协作者](CONTRIBUTORS.md) · [全部 Release](https://github.com/Ycj1026/YRAND/releases)
+> 当前版本 **v2.0.0.18** · 作者 **Ycj1026 与 workbuddy** · [作者与协作者](CONTRIBUTORS.md) · [全部 Release](https://github.com/Ycj1026/YRANDOM/releases)
+
+> [!NOTE]
+> v2.0.0.18 起插件由 YRAND 更名为 **YRANDOM**（为规避 GitHub 仓库风控而改名）；仅显示名变更，插件 id、设置数据与公平账本完全兼容，覆盖安装即生效。
 
 ## 功能
 
@@ -54,23 +57,24 @@ T = −35 dBFS，C = −12 dBFS
 
 ## 安装
 
-ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 下最新的 `.cipx`（覆盖前建议先卸载旧版）；历史版本见 [Releases](https://github.com/Ycj1026/YRAND/releases)。设置项与账本字段见 [`plugin/README.md`](plugin/README.md)。
+ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 下最新的 `.cipx`（覆盖前建议先卸载旧版）；历史版本见 [Releases](https://github.com/Ycj1026/YRANDOM/releases)。设置项与账本字段见 [`plugin/README.md`](plugin/README.md)。
 
 ## 版本历史
 
-每个版本均有独立 Release（含 `.cipx` 附件与完整修改说明）：<https://github.com/Ycj1026/YRAND/releases>
+每个版本均有独立 Release（含 `.cipx` 附件与完整修改说明）：<https://github.com/Ycj1026/YRANDOM/releases>
 
 | 版本 | 主题 |
 |---|---|
-| [2.0.0.9](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.9) | 通知时机重写（IL 补丁） |
-| [2.0.0.10](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.10) | 公平算法 v2 + 麦克风声浪加成 |
-| [2.0.0.11](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.11) | Fluent 抽签图标标识 |
-| [2.0.0.12](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.12) | 麦克风加成入设置页 |
-| [2.0.0.13](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.13) | 滚动效果回归 · 两段式可见 · 去指纹 |
-| [2.0.0.14](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.14) | 过程状态统一「抽取中」 |
-| [2.0.0.15](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.15) | 修复快速滚动重复弹窗 |
-| [2.0.0.16](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.16) | 匿名用户数量统计 + 插件更新提示 |
-| **[2.0.0.17](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.17)** | **右端居中 + 长按拖动 + Sentry 崩溃上报** · latest |
+| [2.0.0.9](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.9) | 通知时机重写（IL 补丁） |
+| [2.0.0.10](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.10) | 公平算法 v2 + 麦克风声浪加成 |
+| [2.0.0.11](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.11) | Fluent 抽签图标标识 |
+| [2.0.0.12](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.12) | 麦克风加成入设置页 |
+| [2.0.0.13](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.13) | 滚动效果回归 · 两段式可见 · 去指纹 |
+| [2.0.0.14](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.14) | 过程状态统一「抽取中」 |
+| [2.0.0.15](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.15) | 修复快速滚动重复弹窗 |
+| [2.0.0.16](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.16) | 匿名用户数量统计 + 插件更新提示 |
+| [2.0.0.17](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.17) | 右端居中 + 长按拖动 + Sentry 崩溃上报 |
+| **[2.0.0.18](https://github.com/Ycj1026/YRANDOM/releases/tag/2.0.0.18)** | **更名 YRANDOM（规避 GitHub 仓库风控）** · latest |
 
 逐版本说明见 [`docs/changelog/`](docs/changelog/)；在线版本发布台：<https://ade236ccde4e195c4.app.workbuddy.host/?sharecode=UV5IFW4S3E>
 
@@ -78,7 +82,7 @@ ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 
 
 ```bash
 dotnet build src/ClassIsland.YRAND/ClassIsland.YRAND.csproj -c Release
-python3 scripts/pack.py            # dist/YRAND-<version>.cipx
+python3 scripts/pack.py            # dist/YRANDOM-<version>.cipx
 ```
 
 需要 .NET 8 SDK。Avalonia / ClassIsland.PluginSdk 由宿主提供（编译期引用、不随包分发），NAudio 2.2.1 随包携带。CI 见 [`.github/workflows/build.yml`](.github/workflows/build.yml)。

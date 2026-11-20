@@ -127,7 +127,7 @@ public class YrandWindow : Window
 		//IL_0264: Expected O, but got Unknown
 		_host = host;
 		_settings = host.Settings;
-		((Window)this).Title = "YRAND";
+		((Window)this).Title = "YRANDOM";
 		((Layoutable)this).Width = 64.0;
 		((Layoutable)this).Height = 64.0;
 		((Window)this).SystemDecorations = (SystemDecorations)0;
@@ -157,7 +157,7 @@ public class YrandWindow : Window
 			BorderThickness = new Thickness(1.5),
 			Child = (Control)(object)child
 		});
-		ToolTip.SetTip((Control)(object)val, (object)"YRAND\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格");
+		ToolTip.SetTip((Control)(object)val, (object)"YRANDOM\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格");
 		((Visual)val).Effect = (IEffect)new DropShadowDirectionEffect
 		{
 			BlurRadius = 10.0,
@@ -441,7 +441,7 @@ public class YrandWindow : Window
 		_lockedName = locked;
 		_names = roster.ToArray();
 		ToolTip.SetTip((Control)(object)_knob,
-			$"YRAND\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格\n本轮指纹 {_host.Fair.Fingerprint} · 第 {_host.Fair.TotalDraws + 1} 次\n{_host.ChanceBadge()}");
+			$"YRANDOM\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格\n本轮指纹 {_host.Fair.Fingerprint} · 第 {_host.Fair.TotalDraws + 1} 次\n{_host.ChanceBadge()}");
 		_continuousCount = 0;
 		_switchInterval = 150.0;
 		// 整个抽选过程只注册这一条通知；此后滚动/定格换名均原地更新，不再注册

@@ -29,7 +29,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ClassIsland.YRAND.Views.SettingsPages;
 
-[ClassIsland.Core.Attributes.SettingsPageInfo("ima.yrand", "YRAND", "\uEAFC", "\uEAFB", ClassIsland.Core.Enums.SettingsWindow.SettingsPageCategory.External)]
+[ClassIsland.Core.Attributes.SettingsPageInfo("ima.yrand", "YRANDOM", "\uEAFC", "\uEAFB", ClassIsland.Core.Enums.SettingsWindow.SettingsPageCategory.External)]
 public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 {
 	private readonly YrandHostService? _service;

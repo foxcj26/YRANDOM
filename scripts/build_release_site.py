@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-# 生成 YRAND 版本发布站：汇总页 + 7 个版本子页（含 cipx/zip/说明下载）
+# 生成 YRANDOM 版本发布站：汇总页 + 全部版本子页（含 cipx/zip/说明下载）
+
+
+def pkg(ver: str) -> str:
+    """版本包文件名前缀：v2.0.0.18 起插件更名为 YRANDOM"""
+    return "YRANDOM" if tuple(map(int, ver.split("."))) >= (2, 0, 0, 18) else "YRAND"
+
 import os, shutil, markdown
 
 WS = "/workspace"
@@ -136,6 +142,20 @@ VERSIONS = [
         ],
         "color": "#CE93D8",
     },
+    {
+        "ver": "2.0.0.18",
+        "title": "插件更名为 YRANDOM",
+        "tagline": "为规避 GitHub 仓库风控改名 YRANDOM，插件 id 与设置数据不变，覆盖安装零迁移",
+        "date": "2026-11-21",
+        "size": "561 KB",
+        "way": "仅改用户可见名称（manifest / 设置页 / 悬浮窗），真实编译 0 错误",
+        "highlights": [
+            "为规避 GitHub 仓库风控，插件由 YRAND 更名为 YRANDOM：manifest name、设置页导航标题、悬浮窗窗口标题与 Tooltip 同步更新",
+            "仅改显示名：插件 id（ima.yrand）、程序集、配置目录均未动，老版本覆盖安装后设置与公平账本全部保留",
+            "抽选流程、通知时机、公平算法、麦克风加成、更新提示、统计、崩溃上报与 v2.0.0.17 完全一致",
+        ],
+        "color": "#7E57C2",
+    },
 ]
 
 CSS = """
@@ -212,7 +232,7 @@ for v in VERSIONS:
     d = f"{SITE}/v{ver}"
     os.makedirs(d, exist_ok=True)
     for ext in ("cipx", "zip", ""):
-        src = f"{WS}/YRAND-{ver}.cipx" if ext == "cipx" else (f"{WS}/YRAND-{ver}.zip" if ext == "zip" else f"{WS}/YRAND-{ver}-修改说明.md")
+        src = f"{WS}/{pkg(ver)}-{ver}.cipx" if ext == "cipx" else (f"{WS}/{pkg(ver)}-{ver}.zip" if ext == "zip" else f"{WS}/{pkg(ver)}-{ver}-修改说明.md")
         shutil.copy(src, d)
     if v.get("preview"):
         shutil.copy(f"{WS}/YRAND-fluent-icon-preview.png", d)
@@ -223,19 +243,19 @@ for v in VERSIONS:
 <a class="back" href="../">← 返回版本汇总</a>
 <header style="text-align:left;margin-bottom:22px">
   <div><span class="badge">{v['date']}</span><span class="badge">{v['size']}</span><span class="badge">{v['way']}</span></div>
-  <h1 style="margin-top:10px">YRAND <span class="accent">v{ver}</span> · {v['title']}</h1>
+  <h1 style="margin-top:10px">YRANDOM <span class="accent">v{ver}</span> · {v['title']}</h1>
   <p class="sub">{v['tagline']}</p>
 </header>
 {preview_html}
 <ul class="hl">{hl}</ul>
 <div class="btns">
-  <a class="btn primary" href="YRAND-{ver}.cipx">⬇ 下载插件包 .cipx（推荐）</a>
-  <a class="btn" href="YRAND-{ver}.zip">⬇ .zip 副本</a>
-  <a class="btn" href="YRAND-{ver}-修改说明.md">📄 修改说明 .md</a>
+  <a class="btn primary" href="{pkg(ver)}-{ver}.cipx">⬇ 下载插件包 .cipx（推荐）</a>
+  <a class="btn" href="{pkg(ver)}-{ver}.zip">⬇ .zip 副本</a>
+  <a class="btn" href="{pkg(ver)}-{ver}-修改说明.md">📄 修改说明 .md</a>
 </div>
-<div class="doc"><h2>完整修改说明</h2>{render_md(f'{WS}/YRAND-{ver}-修改说明.md')}</div>
+<div class="doc"><h2>完整修改说明</h2>{render_md(f'{WS}/{pkg(ver)}-{ver}-修改说明.md')}</div>
 <a class="back" href="../" style="margin-top:26px">← 返回版本汇总</a>"""
-    open(f"{d}/index.html", "w", encoding="utf-8").write(page(f"YRAND v{ver}", body))
+    open(f"{d}/index.html", "w", encoding="utf-8").write(page(f"YRANDOM v{ver}", body))
 
 # ---------- 汇总页 ----------
 cards = []
@@ -250,34 +270,34 @@ for i, v in enumerate(VERSIONS):
   <ul class="hl">{hl}</ul>
   <div class="btns">
     <a class="btn primary" href="v{v['ver']}/">进入版本页</a>
-    <a class="btn" href="v{v['ver']}/YRAND-{v['ver']}.cipx">直接下载 .cipx</a>
+    <a class="btn" href="v{v['ver']}/{pkg(v['ver'])}-{v['ver']}.cipx">直接下载 .cipx</a>
   </div>
 </div>""")
 
 body = f"""
 <header>
-  <h1>YRAND <span class="accent">·</span> 版本发布台</h1>
-  <p class="sub">ClassIsland 课堂随机点名插件 · 7 个迭代版本（自线上 v2.0.0.8 起步）</p>
+  <h1>YRANDOM <span class="accent">·</span> 版本发布台</h1>
+  <p class="sub">ClassIsland 课堂随机点名插件 · 10 个迭代版本（自线上 v2.0.0.8 起步）</p>
 </header>
 <div class="timeline">{''.join(cards)}</div>
 <div class="note">
   <b>安装方式</b>：ClassIsland → 插件管理 → 本地安装，选择 .cipx 包（覆盖安装前建议先卸载旧版）。<br>
-  <b>版本取舍</b>：每个版本在上一版基础上叠加，直接安装 <b>v2.0.0.15（最新）</b> 即可获得全部功能。<br>
+  <b>版本取舍</b>：每个版本在上一版基础上叠加，直接安装 <b>v2.0.0.18（最新）</b> 即可获得全部功能。<br>
   <b>公平性说明</b>：v2.0.0.10 起最终中签者在点击瞬间锁定，滑动概率 / 麦克风音量 / 连滑次数只影响表演时长，不影响抽到谁。
 </div>
-<footer>YRAND · ima.yrand · ClassIsland.PluginSdk 2.0.0.2 / net8.0</footer>"""
-open(f"{SITE}/index.html", "w", encoding="utf-8").write(page("YRAND 版本发布台", body))
+<footer>YRANDOM · ima.yrand · ClassIsland.PluginSdk 2.0.0.2 / net8.0</footer>"""
+open(f"{SITE}/index.html", "w", encoding="utf-8").write(page("YRANDOM 版本发布台", body))
 
 # ---------- latest.json（v2.0.0.16 起插件「更新提示」的检查数据源） ----------
 BASE_URL = "https://ade236ccde4e195c4.app.workbuddy.host"
 SHARECODE = "UV5IFW4S3E"
 latest = VERSIONS[-1]
 latest_json = {
-    "name": "YRAND",
+    "name": "YRANDOM",
     "version": latest["ver"],
     "releasedAt": latest["date"],
     "releaseNotes": latest["tagline"],
-    "downloadUrl": f"{BASE_URL}/v{latest['ver']}/YRAND-{latest['ver']}.cipx?sharecode={SHARECODE}",
+    "downloadUrl": f"{BASE_URL}/v{latest['ver']}/{pkg(latest['ver'])}-{latest['ver']}.cipx?sharecode={SHARECODE}",
 }
 import json as _json
 open(f"{SITE}/latest.json", "w", encoding="utf-8").write(
