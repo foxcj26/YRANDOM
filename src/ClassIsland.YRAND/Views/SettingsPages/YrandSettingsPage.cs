@@ -349,6 +349,39 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		}
 	}
 
+	// ---- v2.0.0.17 崩溃上报 ----
+
+	public bool CrashReportEnabled
+	{
+		get
+		{
+			return Settings.CrashReportEnabled;
+		}
+		set
+		{
+			Settings.CrashReportEnabled = value;
+			Save("CrashReportEnabled");
+		}
+	}
+
+	/// <summary>崩溃上报状态文案（只读展示）。</summary>
+	public string CrashStatusText
+	{
+		get
+		{
+			CrashReportService crash = _service?.Crash;
+			if (crash == null || !Settings.CrashReportEnabled)
+			{
+				return "崩溃上报未启用。";
+			}
+			if (!crash.IsEnabled)
+			{
+				return "已启用，但尚未配置 Sentry DSN（不会上报）。请在 settings.json 的 SentryDsn 字段填入 Sentry 项目 DSN 后重启 ClassIsland。";
+			}
+			return $"已启用，崩溃将上报到 Sentry（插件版本 {typeof(YrandSettingsPage).Assembly.GetName().Version}）。";
+		}
+	}
+
 	private bool _checkingUpdate;
 
 	public string UpdateStatusText
@@ -1496,7 +1529,7 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		SettingsExpander obj81 = val13;
 		obj81.IconSource = (IconSource)(object)new FluentIconSource("\ue960").ProvideValue();
 		((HeaderedItemsControl)obj81).Header = "悬浮窗";
-		obj81.Description = "置顶圆形小钮：点一下抽人，按住拖动位置。";
+		obj81.Description = "置顶圆形小钮：点一下抽人，长按 2 秒后可拖动位置。";
 		ToggleSwitch val109 = new ToggleSwitch();
 		ToggleSwitch val110 = val109;
 		((ISupportInitialize)val109).BeginInit();
@@ -1605,6 +1638,37 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		((Visual)statsHint).Opacity = 0.7;
 		statsRow.Children.Add((Control)statsHint);
 		((ISupportInitialize)statsExpander).EndInit();
+		// —— 崩溃上报（v2.0.0.17，Sentry） ——
+		Controls childrenCrash = ((Panel)obj3).Children;
+		SettingsExpander crashExpander = new SettingsExpander();
+		((ISupportInitialize)crashExpander).BeginInit();
+		((AvaloniaList<Control>)(object)childrenCrash).Add((Control)crashExpander);
+		crashExpander.IconSource = (IconSource)(object)new FluentIconSource("\ueb90").ProvideValue();
+		((HeaderedItemsControl)crashExpander).Header = "崩溃上报（Sentry）";
+		crashExpander.Description = "插件闪退时自动把异常堆栈上报到 Sentry，帮助定位崩溃原因。默认不上传任何名单与抽选记录，仅包含异常信息与插件版本。";
+		ToggleSwitch crashToggle = new ToggleSwitch();
+		crashExpander.Footer = (object)crashToggle;
+		crashToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("CrashReportEnabled", (BindingMode)2)
+		{
+			Source = context.RootObject
+		});
+		ItemCollection crashItems = ((ItemsControl)crashExpander).Items;
+		StackPanel crashRow = new StackPanel();
+		crashRow.Spacing = 6.0;
+		crashItems.Add((object)crashRow);
+		TextBlock crashStatus = new TextBlock();
+		crashStatus.TextWrapping = (TextWrapping)1;
+		crashRow.Children.Add((Control)crashStatus);
+		crashStatus.Bind(TextBlock.TextProperty, new Binding("CrashStatusText")
+		{
+			Source = context.RootObject
+		});
+		TextBlock crashHint = new TextBlock();
+		crashHint.Text = "配置方法：在 sentry.io 免费创建项目得到 DSN，填入 settings.json 的 SentryDsn 字段（留空则完全不上报）；上报地址也可随时关闭。";
+		crashHint.TextWrapping = (TextWrapping)1;
+		((Visual)crashHint).Opacity = 0.7;
+		crashRow.Children.Add((Control)crashHint);
+		((ISupportInitialize)crashExpander).EndInit();
 		context.PopParent();
 		((ISupportInitialize)obj2).EndInit();
 		context.PopParent();

@@ -2,7 +2,7 @@
 
 ClassIsland 课堂随机点名插件。点一下圆钮：名字在**同一条提醒上原地滚动换名**，时间到定下一位，按「滑动概率」决定是否连滑，整套过程结束后才推送一次「抽选结果」并语音播报。
 
-> 当前版本 **v2.0.0.16** · 作者 **Ycj1026 与 workbuddy** · [作者与协作者](CONTRIBUTORS.md) · [全部 Release](https://github.com/Ycj1026/YRAND/releases)
+> 当前版本 **v2.0.0.17** · 作者 **Ycj1026 与 workbuddy** · [作者与协作者](CONTRIBUTORS.md) · [全部 Release](https://github.com/Ycj1026/YRAND/releases)
 
 ## 功能
 
@@ -15,6 +15,8 @@ ClassIsland 课堂随机点名插件。点一下圆钮：名字在**同一条提
 | 麦克风声浪加成 | NAudio 实时 dBFS，随声浪或固定加成影响连滑概率与滚动速度；设置页可配，无设备静默降级 |
 | 插件更新提示 | 启动后静默检查更新（走国内发布台 latest.json，无须翻墙）；空闲时才提醒，同一版本一次，抽选中绝不打扰 |
 | 匿名用户统计 | 每天首次启动计数一次，无名单/机器名/设备号等任何个人信息；设置页可查累计数、可一键关闭 |
+| 崩溃上报（Sentry） | 捕获未处理异常/任务异常/UI 线程异常并上报 Sentry；默认不上报，settings.json 填 DSN 后生效 |
+| 悬浮窗交互 | 默认屏幕右端中间；点一下抽人，长按 2 秒进入拖动（光标变化+边框高亮），防误拖 |
 | Fluent 图标 | 宿主内置抽签图标覆盖设置导航、提醒提供方、结果提醒条 |
 | 通知时机 | 过程只注册一条通知（原地换名），结束才开「抽选结果」——滚动再快也不重复弹窗 |
 
@@ -67,7 +69,8 @@ ClassIsland → 插件管理 → 本地安装，选择 [`releases/`](releases/) 
 | [2.0.0.13](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.13) | 滚动效果回归 · 两段式可见 · 去指纹 |
 | [2.0.0.14](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.14) | 过程状态统一「抽取中」 |
 | [2.0.0.15](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.15) | 修复快速滚动重复弹窗 |
-| **[2.0.0.16](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.16)** | **匿名用户数量统计 + 插件更新提示** · latest |
+| [2.0.0.16](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.16) | 匿名用户数量统计 + 插件更新提示 |
+| **[2.0.0.17](https://github.com/Ycj1026/YRAND/releases/tag/2.0.0.17)** | **右端居中 + 长按拖动 + Sentry 崩溃上报** · latest |
 
 逐版本说明见 [`docs/changelog/`](docs/changelog/)；在线版本发布台：<https://ade236ccde4e195c4.app.workbuddy.host/?sharecode=UV5IFW4S3E>
 

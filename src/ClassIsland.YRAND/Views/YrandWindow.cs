@@ -64,9 +64,21 @@ public class YrandWindow : Window
 
 	private bool _pointerDown;
 
+	private bool _pressMoved;
+
 	private PixelPoint _pressScreenPoint;
 
 	private const double DragThreshold = 4.0;
+
+	/// <summary>长按计时期间移动超过该阈值（逻辑像素）视为放弃长按拖动。</summary>
+	private const double DragArmThreshold = 8.0;
+
+	/// <summary>长按时长：按住 2 秒后才进入拖动模式。</summary>
+	private const double LongPressSeconds = 2.0;
+
+	private readonly DispatcherTimer _longPressTimer;
+
+	private IBrush _knobDefaultBorder = (IBrush)new SolidColorBrush(Color.FromRgb((byte)124, (byte)77, byte.MaxValue), 0.55);
 
 	public YrandWindow(YrandHostService host)
 	{
@@ -145,7 +157,7 @@ public class YrandWindow : Window
 			BorderThickness = new Thickness(1.5),
 			Child = (Control)(object)child
 		});
-		ToolTip.SetTip((Control)(object)val, (object)"YRAND\n点一下抽人；按住拖动；滑动中再点一下立即定格");
+		ToolTip.SetTip((Control)(object)val, (object)"YRAND\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格");
 		((Visual)val).Effect = (IEffect)new DropShadowDirectionEffect
 		{
 			BlurRadius = 10.0,
@@ -161,6 +173,11 @@ public class YrandWindow : Window
 		((InputElement)val).PointerPressed += Knob_OnPointerPressed;
 		((InputElement)val).PointerMoved += Knob_OnPointerMoved;
 		((InputElement)val).PointerReleased += Knob_OnPointerReleased;
+		_longPressTimer = new DispatcherTimer
+		{
+			Interval = TimeSpan.FromSeconds(LongPressSeconds)
+		};
+		_longPressTimer.Tick += LongPressTimer_Tick;
 		_timer = new DispatcherTimer
 		{
 			Interval = TimeSpan.FromMilliseconds(30.0)
@@ -170,6 +187,7 @@ public class YrandWindow : Window
 		((TopLevel)this).Closed += delegate
 		{
 			_timer.Stop();
+			_longPressTimer.Stop();
 			_topmost.Dispose();
 			CapturePosition();
 			_host.SaveSettings();
@@ -178,72 +196,90 @@ public class YrandWindow : Window
 
 	private void Knob_OnPointerPressed(object? sender, PointerPressedEventArgs e)
 	{
-		//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0031: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0034: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0039: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003e: Unknown result type (might be due to invalid IL or missing references)
 		PointerPoint currentPoint = ((PointerEventArgs)e).GetCurrentPoint((Visual)(object)this);
 		PointerPointProperties properties = currentPoint.Properties;
 		if (properties.IsLeftButtonPressed)
 		{
 			_pointerDown = true;
 			_dragging = false;
+			_pressMoved = false;
 			currentPoint = ((PointerEventArgs)e).GetCurrentPoint((Visual)(object)this);
 			_pressScreenPoint = ToScreenPoint(currentPoint.Position);
 			((PointerEventArgs)e).Pointer.Capture((IInputElement)(object)_knob);
+			// 长按 2 秒计时开始；期间移动即取消，松开若未进入拖动则按点击处理
+			_longPressTimer.Stop();
+			_longPressTimer.Start();
+		}
+	}
+
+	private void LongPressTimer_Tick(object? sender, EventArgs e)
+	{
+		_longPressTimer.Stop();
+		if (_pointerDown && !_dragging && !_pressMoved)
+		{
+			_dragging = true;
+			// 进入拖动模式：四向箭头光标 + 边框高亮，松开或拖完恢复
+			try
+			{
+				((InputElement)this).Cursor = new Cursor(StandardCursorType.SizeAll);
+			}
+			catch (Exception)
+			{
+			}
+			_knob.BorderBrush = (IBrush)new SolidColorBrush(Color.FromRgb((byte)179, (byte)143, byte.MaxValue), 1.0);
+			_knob.BorderThickness = new Thickness(2.5);
 		}
 	}
 
 	private void Knob_OnPointerMoved(object? sender, PointerEventArgs e)
 	{
-		//IL_0019: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0026: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0091: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0096: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a2: Unknown result type (might be due to invalid IL or missing references)
 		if (_pointerDown && e.Pointer.Captured != null)
 		{
 			PointerPoint currentPoint = e.GetCurrentPoint((Visual)(object)this);
 			PixelPoint pressScreenPoint = ToScreenPoint(currentPoint.Position);
 			int num = pressScreenPoint.X - _pressScreenPoint.X;
 			int num2 = pressScreenPoint.Y - _pressScreenPoint.Y;
-			if (_dragging || !((double)Math.Abs(num) < 4.0) || !((double)Math.Abs(num2) < 4.0))
+			if (!_dragging)
 			{
-				_dragging = true;
-				((Window)this).Position = ((Window)this).Position + new PixelPoint(num, num2);
-				_pressScreenPoint = pressScreenPoint;
-				ClampToScreen();
+				// 长按期间发生明显移动：视为放弃长按拖动（不拖动窗口、松开也不触发抽选）
+				if (!_pressMoved && (Math.Abs(num) >= DragArmThreshold || Math.Abs(num2) >= DragArmThreshold))
+				{
+					_pressMoved = true;
+					_longPressTimer.Stop();
+				}
+				return;
 			}
+			((Window)this).Position = ((Window)this).Position + new PixelPoint(num, num2);
+			_pressScreenPoint = pressScreenPoint;
+			ClampToScreen();
 		}
 	}
 
 	private void Knob_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
 	{
-		if (_pointerDown)
+		if (!_pointerDown)
 		{
-			_pointerDown = false;
-			((PointerEventArgs)e).Pointer.Capture((IInputElement)null);
-			if (_dragging)
-			{
-				_dragging = false;
-				CapturePosition();
-				_host.SaveSettings();
-			}
-			else
-			{
-				OnKnobTapped();
-			}
+			return;
 		}
+		_longPressTimer.Stop();
+		_pointerDown = false;
+		((PointerEventArgs)e).Pointer.Capture((IInputElement)null);
+		if (_dragging)
+		{
+			_dragging = false;
+			// 恢复默认光标与边框
+			((InputElement)this).Cursor = (Cursor?)null;
+			_knob.BorderBrush = _knobDefaultBorder;
+			_knob.BorderThickness = new Thickness(1.5);
+			CapturePosition();
+			_host.SaveSettings();
+		}
+		else if (!_pressMoved)
+		{
+			// 未满 2 秒且未移动：视为点击
+			OnKnobTapped();
+		}
+		// _pressMoved：长按期内拖动未成立，既不拖动也不触发抽选
 	}
 
 	private void OnKnobTapped()
@@ -366,43 +402,17 @@ public class YrandWindow : Window
 		_topmost.Attach();
 		if (_settings.WindowX == int.MinValue || _settings.WindowY == int.MinValue)
 		{
+			// v2.0.0.17：默认位置改为屏幕右端中间（工作区右缘向内 24px，垂直居中）
 			Screen primary = ((WindowBase)this).Screens.Primary;
 			double num = ((primary != null) ? primary.Scaling : 1.0);
+			PixelRect workingArea = ((primary != null) ? primary.WorkingArea : new PixelRect(0, 0, 1920, 1080));
 			Rect bounds = ((Visual)this).Bounds;
 			int num2 = (int)Math.Ceiling(bounds.Width * num);
-			int num3;
-			PixelRect bounds2;
-			if (primary == null)
-			{
-				num3 = 0;
-			}
-			else
-			{
-				bounds2 = primary.Bounds;
-				num3 = bounds2.X;
-			}
-			int num4;
-			if (primary == null)
-			{
-				num4 = 1920;
-			}
-			else
-			{
-				bounds2 = primary.Bounds;
-				num4 = bounds2.Width;
-			}
-			int num5 = num3 + (num4 - num2) - 20;
-			int num6;
-			if (primary == null)
-			{
-				num6 = 0;
-			}
-			else
-			{
-				bounds2 = primary.Bounds;
-				num6 = bounds2.Y;
-			}
-			((Window)this).Position = new PixelPoint(num5, num6 + 80);
+			bounds = ((Visual)this).Bounds;
+			int num3 = (int)Math.Ceiling(bounds.Height * num);
+			int num4 = workingArea.X + workingArea.Width - num2 - 24;
+			int num5 = workingArea.Y + Math.Max(0, (workingArea.Height - num3) / 2);
+			((Window)this).Position = new PixelPoint(num4, num5);
 		}
 		else
 		{
@@ -431,7 +441,7 @@ public class YrandWindow : Window
 		_lockedName = locked;
 		_names = roster.ToArray();
 		ToolTip.SetTip((Control)(object)_knob,
-			$"YRAND\n点一下抽人；按住拖动；滑动中再点一下立即定格\n本轮指纹 {_host.Fair.Fingerprint} · 第 {_host.Fair.TotalDraws + 1} 次\n{_host.ChanceBadge()}");
+			$"YRAND\n点一下抽人；长按 2 秒后拖动；滑动中再点一下立即定格\n本轮指纹 {_host.Fair.Fingerprint} · 第 {_host.Fair.TotalDraws + 1} 次\n{_host.ChanceBadge()}");
 		_continuousCount = 0;
 		_switchInterval = 150.0;
 		// 整个抽选过程只注册这一条通知；此后滚动/定格换名均原地更新，不再注册

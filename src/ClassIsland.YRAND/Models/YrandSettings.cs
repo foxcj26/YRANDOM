@@ -126,6 +126,14 @@ public class YrandSettings
 	/// <summary>最近一次匿名上报日期（yyyy-MM-dd，每天最多一次）。</summary>
 	public string LastStatsReportDate { get; set; } = "";
 
+	// ---- v2.0.0.17 崩溃上报（Sentry） ----
+
+	/// <summary>是否允许崩溃上报。DSN 为空时即使开启也不会有任何网络行为。</summary>
+	public bool CrashReportEnabled { get; set; } = true;
+
+	/// <summary>Sentry 项目 DSN（在 sentry.io 创建项目后获得）。留空 = 不上报。</summary>
+	public string SentryDsn { get; set; } = "";
+
 	public static YrandSettings Load(string path)
 	{
 		try

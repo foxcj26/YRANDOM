@@ -47,6 +47,8 @@ public class YrandHostService : IHostedService
 
 	private UsageStatsService? _stats;
 
+	private CrashReportService? _crash;
+
 	/// <summary>公平抽取核心（债务校正 + 冷落兜底 + 可验证种子）。</summary>
 	public FairDrawService Fair => _fair;
 
@@ -58,6 +60,9 @@ public class YrandHostService : IHostedService
 
 	/// <summary>匿名使用统计服务（v2.0.0.16）。</summary>
 	public UsageStatsService Stats => _stats ??= new UsageStatsService(this);
+
+	/// <summary>Sentry 崩溃上报服务（v2.0.0.17，DSN 为空时为 no-op）。</summary>
+	public CrashReportService Crash => _crash ??= new CrashReportService(this);
 
 	public YrandSettings Settings => _settings;
 
@@ -77,6 +82,7 @@ public class YrandHostService : IHostedService
 		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
 		_settings = YrandSettings.Load(_settingsPath);
 		_fair = new FairDrawService(_settings);
+		Crash.Start();
 		Update.Start();
 		Stats.Start();
 		if (_settings.ShowWindowOnStartup)

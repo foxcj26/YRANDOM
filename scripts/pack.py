@@ -20,23 +20,29 @@ SRC = ROOT / "src" / "ClassIsland.YRAND"
 BUILD = SRC / "bin" / "Release" / "net8.0"
 PLUGIN = ROOT / "plugin"
 
-# 随包携带的依赖：插件自身 + NAudio 六件套。
+# 随包携带的依赖：插件自身 + NAudio 六件套 + Sentry（崩溃上报）。
 # Avalonia / ClassIsland.* / FluentAvalonia 由宿主提供，不随包分发。
 KEEP = {
     "ClassIsland.YRAND",
     "NAudio", "NAudio.Core", "NAudio.WinMM",
     "NAudio.Wasapi", "NAudio.Asio", "NAudio.Midi",
+    "Sentry",
 }
 
-# 包内文件：编译产物 + 元数据
-BUILD_FILES = [
+# 包内文件：编译产物 + 元数据（依赖 DLL 依 KEEP 动态收集）
+BUILD_FILES_BASE = [
     "ClassIsland.YRAND.dll",
     "ClassIsland.YRAND.deps.json",
     "ClassIsland.YRAND.runtimeconfig.json",
-    "NAudio.dll", "NAudio.Core.dll", "NAudio.WinMM.dll",
-    "NAudio.Wasapi.dll", "NAudio.Asio.dll", "NAudio.Midi.dll",
 ]
 META_FILES = ["manifest.yml", "README.md", "icon.png"]
+
+
+def collect_build_files() -> list:
+    files = list(BUILD_FILES_BASE)
+    for name in sorted(KEEP - {"ClassIsland.YRAND"}):
+        files.append(f"{name}.dll")
+    return files
 
 
 def read_version() -> str:
@@ -76,7 +82,7 @@ def main() -> None:
     shutil.rmtree(stage, ignore_errors=True)
     stage.mkdir()
 
-    for f in BUILD_FILES:
+    for f in collect_build_files():
         src = BUILD / f
         if not src.exists():
             raise SystemExit(f"缺少编译产物：{src}\n请先执行 dotnet build -c Release")
