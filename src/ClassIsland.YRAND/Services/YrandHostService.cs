@@ -45,6 +45,9 @@ public class YrandHostService : IHostedService
 
 	private UpdateCheckService? _update;
 
+	/// <summary>v2.0.0.19：当前打开的更新提示窗口（单实例）。</summary>
+	private UpdatePromptWindow? _updateWindow;
+
 	private UsageStatsService? _stats;
 
 	private CrashReportService? _crash;
@@ -217,7 +220,7 @@ public class YrandHostService : IHostedService
 	public void AnnounceStatus(string text, double displaySeconds = 3.0)
 	{
 		EndEpisodeNotification();
-		ShowYrand("YRAND", text, forceNew: true, speech: false, displaySeconds, null);
+		ShowYrand("YRANDOM", text, forceNew: true, speech: false, displaySeconds, null);
 	}
 
 	/// <summary>
@@ -237,8 +240,38 @@ public class YrandHostService : IHostedService
 			{
 				return;
 			}
-			ShowYrand("YRAND", text, forceNew: true, speech: false, displaySeconds, null);
+			ShowYrand("YRANDOM", text, forceNew: true, speech: false, displaySeconds, null);
 		}, DispatcherPriority.Background);
+	}
+
+	/// <summary>
+	/// v2.0.0.19：更新提示改为独立可关闭窗口（不再走 ClassIsland 通知流）。
+	/// 仅在「无抽选过程通知且无占线通知」的完全空闲状态下弹出，抽选中绝不打扰；
+	/// 已打开时仅激活现有窗口。返回是否成功弹出（用于决定是否记录 LastNotifiedVersion）。
+	/// </summary>
+	public bool TryShowUpdatePrompt()
+	{
+		return Dispatcher.UIThread.Invoke(delegate
+		{
+			if (_episodeRequest != null || _lastRequest != null)
+			{
+				return false;
+			}
+			UpdatePromptWindow updatePromptWindow = _updateWindow;
+			if (updatePromptWindow != null)
+			{
+				((WindowBase)updatePromptWindow).Activate();
+				return true;
+			}
+			UpdatePromptWindow updatePromptWindow2 = new UpdatePromptWindow(Update);
+			_updateWindow = updatePromptWindow2;
+			updatePromptWindow2.Closed += delegate
+			{
+				_updateWindow = null;
+			};
+			((WindowBase)updatePromptWindow2).Show();
+			return true;
+		});
 	}
 
 	private DateTime SessionDeadline()

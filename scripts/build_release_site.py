@@ -156,6 +156,20 @@ VERSIONS = [
         ],
         "color": "#7E57C2",
     },
+    {
+        "ver": "2.0.0.19",
+        "title": "修复长按拖动 · 更新提示改窗口",
+        "tagline": "长按拖不动已修（阈值放宽 + 拖动期间暂停置顶维持），更新提醒改为独立可关闭窗口并附发布台链接",
+        "date": "2026-11-21",
+        "size": "562 KB",
+        "way": "拖动状态机加固 + 新增 UpdatePromptWindow，真实编译 0 错误",
+        "highlights": [
+            "修复长按拖动失效：取消阈值 8px→24px（手抖不再误判）、按下期间暂停 Topmost 往返维持（防 z-order 切换打断指针捕获）、进入拖动重设锚点防跳变、捕获丢失自动复位",
+            "更新提示不再走 ClassIsland 通知流：改为弹出独立可关闭窗口，显示新版本号与说明，附「前往发布台」「直接下载 .cipx」「以后再说」三个按钮",
+            "更新窗口仍只在完全空闲时弹出；忙时未弹出则不记录已提醒，下一轮检查继续提醒（比旧版更可靠）",
+        ],
+        "color": "#9575CD",
+    },
 ]
 
 CSS = """
@@ -277,12 +291,12 @@ for i, v in enumerate(VERSIONS):
 body = f"""
 <header>
   <h1>YRANDOM <span class="accent">·</span> 版本发布台</h1>
-  <p class="sub">ClassIsland 课堂随机点名插件 · 10 个迭代版本（自线上 v2.0.0.8 起步）</p>
+  <p class="sub">ClassIsland 课堂随机点名插件 · 11 个迭代版本（自线上 v2.0.0.8 起步）</p>
 </header>
 <div class="timeline">{''.join(cards)}</div>
 <div class="note">
   <b>安装方式</b>：ClassIsland → 插件管理 → 本地安装，选择 .cipx 包（覆盖安装前建议先卸载旧版）。<br>
-  <b>版本取舍</b>：每个版本在上一版基础上叠加，直接安装 <b>v2.0.0.18（最新）</b> 即可获得全部功能。<br>
+  <b>版本取舍</b>：每个版本在上一版基础上叠加，直接安装 <b>v2.0.0.19（最新）</b> 即可获得全部功能。<br>
   <b>公平性说明</b>：v2.0.0.10 起最终中签者在点击瞬间锁定，滑动概率 / 麦克风音量 / 连滑次数只影响表演时长，不影响抽到谁。
 </div>
 <footer>YRANDOM · ima.yrand · ClassIsland.PluginSdk 2.0.0.2 / net8.0</footer>"""

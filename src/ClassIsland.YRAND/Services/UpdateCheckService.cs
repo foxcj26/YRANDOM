@@ -95,10 +95,13 @@ public class UpdateCheckService
 			bool hasUpdate = latest > Current;
 			if (hasUpdate && notify && _settings.UpdateNotifyEnabled && _settings.LastNotifiedVersion != ver)
 			{
-				string note = Truncate(notes, 40);
-				_host.AnnounceBackground($"发现新版本 v{ver}：{note}。更新包见 YRAND 设置页说明。");
-				_settings.LastNotifiedVersion = ver;
-				_host.SaveSettings();
+				// v2.0.0.19：改用独立可关闭窗口（附发布台链接），不再走 ClassIsland 通知流。
+				// 仅在空闲时弹出成功才记录版本号，忙时下轮检查仍会提醒。
+				if (_host.TryShowUpdatePrompt())
+				{
+					_settings.LastNotifiedVersion = ver;
+					_host.SaveSettings();
+				}
 			}
 			return hasUpdate;
 		}
@@ -109,16 +112,5 @@ public class UpdateCheckService
 		}
 	}
 
-	private static string Truncate(string s, int len)
-	{
-		if (string.IsNullOrWhiteSpace(s))
-		{
-			return "详见发布说明";
-		}
-		if (s.Length <= len)
-		{
-			return s;
-		}
-		return s.Substring(0, len) + "…";
-	}
+	// v2.0.0.19：更新提示改为窗口展示，不再截断通知流文案（原 Truncate 已移除）
 }

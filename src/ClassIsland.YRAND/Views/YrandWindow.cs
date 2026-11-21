@@ -70,13 +70,16 @@ public class YrandWindow : Window
 
 	private const double DragThreshold = 4.0;
 
-	/// <summary>长按计时期间移动超过该阈值（逻辑像素）视为放弃长按拖动。</summary>
-	private const double DragArmThreshold = 8.0;
+	/// <summary>长按计时期间移动超过该阈值（逻辑像素）视为放弃长按拖动。v2.0.0.19 由 8px 放宽到 24px：手部轻微抖动不再误判为「放弃」，这是长按拖不动的根因之一。</summary>
+	private const double DragArmThreshold = 24.0;
 
 	/// <summary>长按时长：按住 2 秒后才进入拖动模式。</summary>
 	private const double LongPressSeconds = 2.0;
 
 	private readonly DispatcherTimer _longPressTimer;
+
+	/// <summary>v2.0.0.19：最近一次指针相对窗口的位置，长按计时期间持续跟踪，进入拖动瞬间以它为锚点防跳变。</summary>
+	private Point _lastRelative;
 
 	private IBrush _knobDefaultBorder = (IBrush)new SolidColorBrush(Color.FromRgb((byte)124, (byte)77, byte.MaxValue), 0.55);
 
@@ -173,6 +176,7 @@ public class YrandWindow : Window
 		((InputElement)val).PointerPressed += Knob_OnPointerPressed;
 		((InputElement)val).PointerMoved += Knob_OnPointerMoved;
 		((InputElement)val).PointerReleased += Knob_OnPointerReleased;
+		((InputElement)val).PointerCaptureLost += Knob_OnPointerCaptureLost;
 		_longPressTimer = new DispatcherTimer
 		{
 			Interval = TimeSpan.FromSeconds(LongPressSeconds)
@@ -204,9 +208,12 @@ public class YrandWindow : Window
 			_dragging = false;
 			_pressMoved = false;
 			currentPoint = ((PointerEventArgs)e).GetCurrentPoint((Visual)(object)this);
+			_lastRelative = currentPoint.Position;
 			_pressScreenPoint = ToScreenPoint(currentPoint.Position);
 			((PointerEventArgs)e).Pointer.Capture((IInputElement)(object)_knob);
-			// 长按 2 秒计时开始；期间移动即取消，松开若未进入拖动则按点击处理
+			// v2.0.0.19：长按期间暂停 Topmost 往返维持，防止 z-order 切换打断指针捕获
+			_topmost.SuppressReassert = true;
+			// 长按 2 秒计时开始；期间明显移动（≥24px）即取消，松开若未进入拖动则按点击处理
 			_longPressTimer.Stop();
 			_longPressTimer.Start();
 		}
@@ -218,6 +225,8 @@ public class YrandWindow : Window
 		if (_pointerDown && !_dragging && !_pressMoved)
 		{
 			_dragging = true;
+			// v2.0.0.19：以进入拖动瞬间的指针位置为锚点，防止窗口跳变
+			_pressScreenPoint = ToScreenPoint(_lastRelative);
 			// 进入拖动模式：四向箭头光标 + 边框高亮，松开或拖完恢复
 			try
 			{
@@ -236,6 +245,7 @@ public class YrandWindow : Window
 		if (_pointerDown && e.Pointer.Captured != null)
 		{
 			PointerPoint currentPoint = e.GetCurrentPoint((Visual)(object)this);
+			_lastRelative = currentPoint.Position;
 			PixelPoint pressScreenPoint = ToScreenPoint(currentPoint.Position);
 			int num = pressScreenPoint.X - _pressScreenPoint.X;
 			int num2 = pressScreenPoint.Y - _pressScreenPoint.Y;
@@ -263,6 +273,7 @@ public class YrandWindow : Window
 		}
 		_longPressTimer.Stop();
 		_pointerDown = false;
+		_topmost.SuppressReassert = false;
 		((PointerEventArgs)e).Pointer.Capture((IInputElement)null);
 		if (_dragging)
 		{
@@ -280,6 +291,25 @@ public class YrandWindow : Window
 			OnKnobTapped();
 		}
 		// _pressMoved：长按期内拖动未成立，既不拖动也不触发抽选
+	}
+
+	private void Knob_OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+	{
+		// v2.0.0.19：捕获丢失（如系统级打断）时复位状态机，避免 _pointerDown 卡死导致后续长按失效
+		_longPressTimer.Stop();
+		_pointerDown = false;
+		_dragging = false;
+		_pressMoved = false;
+		_topmost.SuppressReassert = false;
+		try
+		{
+			((InputElement)this).Cursor = (Cursor?)null;
+		}
+		catch (Exception)
+		{
+		}
+		_knob.BorderBrush = _knobDefaultBorder;
+		_knob.BorderThickness = new Thickness(1.5);
 	}
 
 	private void OnKnobTapped()

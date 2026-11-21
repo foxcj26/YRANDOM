@@ -1558,7 +1558,7 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		((AvaloniaList<Control>)(object)childrenUpd).Add((Control)updExpander);
 		updExpander.IconSource = (IconSource)(object)new FluentIconSource("\ue895").ProvideValue();
 		((HeaderedItemsControl)updExpander).Header = "插件更新提示";
-		updExpander.Description = "启动约 20 秒后自动检查一次更新（走国内发布台，无须翻墙）。发现新版本时仅在完全空闲状态下提醒一次——抽选进行中绝不打扰。";
+		updExpander.Description = "启动约 20 秒后自动检查一次更新（走国内发布台，无须翻墙）。发现新版本时弹出独立的更新窗口（可关闭），窗口内附发布台直达链接；仅在完全空闲状态下弹出——抽选进行中绝不打扰，同一版本不重复弹出。";
 		ToggleSwitch updToggle = new ToggleSwitch();
 		updExpander.Footer = (object)updToggle;
 		updToggle.Bind(ToggleButton.IsCheckedProperty, new Binding("UpdateCheckEnabled", (BindingMode)2)
@@ -1585,7 +1585,7 @@ public class YrandSettingsPage : SettingsPageBase, INotifyPropertyChanged
 		((ContentControl)checkBtn).Content = "立即检查";
 		updRow2.Children.Add((Control)checkBtn);
 		TextBlock updHint = new TextBlock();
-		updHint.Text = "更新方法：到版本发布台下载最新版 .cipx，ClassIsland → 插件管理 → 本地安装（建议先卸载旧版）。";
+		updHint.Text = "更新方法：更新窗口内点「前往发布台」下载最新版 .cipx，ClassIsland → 插件管理 → 本地安装（建议先卸载旧版）。";
 		updHint.TextWrapping = (TextWrapping)1;
 		((Visual)updHint).Opacity = 0.7;
 		((Layoutable)updHint).VerticalAlignment = (VerticalAlignment)2;
