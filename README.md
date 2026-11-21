@@ -86,7 +86,7 @@ dotnet build src/ClassIsland.YRAND/ClassIsland.YRAND.csproj -c Release
 python3 scripts/pack.py            # dist/YRANDOM-<version>.cipx
 ```
 
-需要 .NET 8 SDK。Avalonia / ClassIsland.PluginSdk 由宿主提供（编译期引用、不随包分发），NAudio 2.2.1 随包携带。CI 见 [`.github/workflows/build.yml`](.github/workflows/build.yml)。
+需要 .NET 8 SDK。Avalonia / ClassIsland.PluginSdk 由宿主提供（编译期引用、不随包分发），NAudio 2.2.1 随包携带。CI 配置保留在 [`ci/build.yml`](ci/build.yml)（暂未启用，需要 GitHub Actions 时移回 `.github/workflows/` 即可）。
 
 ## 许可
 
