@@ -5,16 +5,16 @@
 #              用 assetsRoot 拼接 README / 图标的 raw 地址，并从发行日志提取 MD5。
 
 id: ima.yrand
-name: YRAND
+name: YRANDOM
 description: >-
   ClassIsland 课堂随机点名插件。名字在同一条提醒上原地滚动换名、两段式定格连滑；
   债务校正 + Gumbel 加权 + 冷落滑窗的公平算法，麦克风声浪加成，结果可复算自证。
 entranceAssembly: "ClassIsland.YRAND.dll"
-url: https://github.com/foxcj26/YRAND
+url: https://github.com/foxcj26/YRANDOM
 repoOwner: foxcj26
-repoName: YRAND
+repoName: YRANDOM
 assetsRoot: main/plugin
-version: 2.0.0.15
+version: 2.0.0.19
 apiVersion: 2.0.0.0
 author: foxcj26 与 workbuddy
 icon: icon.png
