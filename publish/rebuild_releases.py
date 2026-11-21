@@ -22,7 +22,7 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
-OWNER, REPO = "Ycj1026", "YRAND"
+OWNER, REPO = "foxcj26", "YRAND"
 API = "https://api.github.com"
 UPLOAD = "https://uploads.github.com"
 SHA = "a4243e2f8976730ff35827a702c74e0f47004e5c"

@@ -10,13 +10,13 @@ description: >-
   ClassIsland 课堂随机点名插件。名字在同一条提醒上原地滚动换名、两段式定格连滑；
   债务校正 + Gumbel 加权 + 冷落滑窗的公平算法，麦克风声浪加成，结果可复算自证。
 entranceAssembly: "ClassIsland.YRAND.dll"
-url: https://github.com/Ycj1026/YRAND
-repoOwner: Ycj1026
+url: https://github.com/foxcj26/YRAND
+repoOwner: foxcj26
 repoName: YRAND
 assetsRoot: main/plugin
 version: 2.0.0.15
 apiVersion: 2.0.0.0
-author: Ycj1026 与 workbuddy
+author: foxcj26 与 workbuddy
 icon: icon.png
 readme: README.md
 supportedOSPlatforms:
